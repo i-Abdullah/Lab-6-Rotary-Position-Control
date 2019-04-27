@@ -331,31 +331,30 @@ measureTip_t2 = trial2(:,3);
 figure(3);
 
 plot(time_t1,measureAngle_t1)
-info = getrect(figure(3));
+pts = ginput(2);
+%info = getrect(figure(3));
 
 % find closest time so you can cut from there
-% i1 = first index
-i1 = find(min(abs(time_t1-info(1))) == abs(time_t1-info(1)));
-i2 = find(min(abs(time_t1-info(3))) == abs(time_t1-info(3)));
 
-time_t1 = time_t1(i1:i2);
-measureAngle_t1 = measureAngle_t1(i1:i2);
+idx = knnsearch([time_t1 measureAngle_t1],pts)
+
+time_t1 = time_t1(idx(1):idx(2));
+measureAngle_t1 = measureAngle_t1(idx(1):idx(2));
 
 % zero time
-
 time_t1 = time_t1 - time_t1(1);
+
 % repeat for second trial
-
-figure(3);
-
 plot(time_t2,measureAngle_t2)
-info = getrect(figure(3));
+pts = ginput(2);
+%info = getrect(figure(3));
 
 % find closest time so you can cut from there
-% i1 = first index
-i1 = find(min(abs(time_t2-info(1))) == abs(time_t2-info(1)));
-i2 = find(min(abs(time_t2-info(3))) == abs(time_t2-info(3)));
 
-time_t2 = time_t2(i1:i2);
-measureAngle_t2 = measureAngle_t2(i1:i2);
+idx = knnsearch([time_t2 measureAngle_t2],pts)
 
+time_t2 = time_t2(idx(1):idx(2));
+measureAngle_t2 = measureAngle_t2(idx(1):idx(2));
+
+% zero time
+time_t2 = time_t2 - time_t2(1);
