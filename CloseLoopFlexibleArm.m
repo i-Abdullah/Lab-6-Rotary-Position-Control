@@ -158,17 +158,17 @@ for i = 1:length(K1)
     
         figure(j)
         
-        Time_plot = Time_angle(i,:);
+        Time_plot_angle = Time_angle(i,:);
         deg_plot = deg(i,:);
         
         % clean the zeros:
         % clean everything but first index
-        zero_index = find(Time_plot==0);
-        Time_plot(zero_index(2:end)) = [];
+        zero_index = find(Time_plot_angle==0);
+        Time_plot_angle(zero_index(2:end)) = [];
         
         deg_plot(zero_index(2:end)) = [];
         
-        plot(Time_plot,deg_plot,'LineWidth',1.5) ;
+        plot(Time_plot_angle,deg_plot,'LineWidth',1.5) ;
         hold on;
 
 
@@ -200,17 +200,17 @@ for i = 1:length(K1)
     
         figure(j+1)
         
-        Time_plot = Time_disp(i,:);
+        Time_plot_disp = Time_disp(i,:);
         disp_plot = disp(i,:);
         
         % clean the zeros:
         % clean everything but first index
-        zero_index = find(Time_plot==0);
-        Time_plot(zero_index(2:end)) = [];
+        zero_index = find(Time_plot_disp==0);
+        Time_plot_disp(zero_index(2:end)) = [];
         
         disp_plot(zero_index(2:end)) = [];
         
-        plot(Time_plot,disp_plot,'LineWidth',1.5) ;
+        plot(Time_plot_disp,disp_plot,'LineWidth',1.5) ;
         hold on;
 
 
@@ -328,7 +328,7 @@ measureTip_t1 = trial1(:,3);
 measureAngle_t2 = trial2(:,2)+ abs(min(trial2(:,2)));
 measureTip_t2 = trial2(:,3);
 
-figure(3);
+figure(3)
 
 plot(time_t1,measureAngle_t1)
 pts = ginput(2);
@@ -344,6 +344,8 @@ measureAngle_t1 = measureAngle_t1(idx(1):idx(2));
 % zero time
 time_t1 = time_t1 - time_t1(1);
 
+figure(3)
+
 % repeat for second trial
 plot(time_t2,measureAngle_t2)
 pts = ginput(2);
@@ -358,3 +360,19 @@ measureAngle_t2 = measureAngle_t2(idx(1):idx(2));
 
 % zero time
 time_t2 = time_t2 - time_t2(1);
+
+
+%% plot data overlayed:
+
+figure(4)
+plot(Time_plot_angle,deg_plot,'LineWidth',1.5)
+hold on
+plot(time_t1,measureAngle_t1,'LineWidth',1.5)
+legend('Expermintal data','Thoertical Model');
+
+figure(5)
+
+plot(Time_plot_disp,disp_plot,'LineWidth',1.5)
+hold on
+plot(time_t2,measureAngle_t2,'LineWidth',1.5)
+legend('Expermintal data','Thoertical Model');
