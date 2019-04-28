@@ -44,11 +44,6 @@ Karm = (2*pi*fc)^2 *(JL) ;
 % K3 = KD?
 % K4 = KDd
 
-K1 = linspace(0,20,5);
-K2 = linspace(-50,0,5);
-K3 = linspace(0,1.5,5);
-K4 = linspace(0,1.5,5);
-
 % use actual gains applied using data collected for error analysis
 
 trial1 = load('Data/Group18_trail1_flex_TG') ;
@@ -148,6 +143,97 @@ index = index + 1;
     
 end
 
+
+%% Experimental data:
+
+
+% adjust the data
+%t1 = trial 1
+
+% get time
+trial1_time = trial1(:,1)*10^(-3);
+trial2_time = trial2(:,1)*10^(-3);
+
+% zero time based on the first index
+
+trial1_time = trial1_time(:) - trial1_time(1);
+trial2_time = trial2_time(:) - trial2_time(1);
+
+
+% shift all the measured tip angle from -input/2 to +input/2 
+% so it goes from 0 to input/2;
+
+% the + thetad/2 is to shift the data up by the input.
+% the hub goes from negative input/2 to +input/2
+
+trial1_angle = trial1(:,2) + abs(min(trial1(:,2)));
+trial2_angle = trial2(:,2)+ abs(min(trial2(:,2)));
+
+% git tip displacement
+trial1_tip = trial1(:,3);
+trial2_tip = trial2(:,3);
+
+
+%% dissect data
+
+
+
+% - - - - - - - - - ( Trial 1 ) - - - - - - - - - - - - - -
+
+figure(3)
+
+plot(trial1_time,trial1_angle);
+pts = ginput(2);
+%info = getrect(figure(3));
+
+% find closest time so you can cut from there
+
+idx = knnsearch([trial1_time trial1_angle],pts);
+
+trial1_time = trial1_time(idx(1):idx(2));
+trial1_angle = trial1_angle(idx(1):idx(2)); % measured change in angle
+measureDisp_t1 = trial1_tip(idx(1):idx(2)); % measured change in tip displacement
+% zero time
+trial1_time = trial1_time - trial1_time(1);
+
+% get releated tip angle
+trial1_tip = trial1_tip(idx(1):idx(2));
+
+
+% - - - - - - - - - ( end of tiral 1 ) - - - - - - - - - - - -
+
+
+% - - - - - - - - - ( Trial 2 ) - - - - - - - - - - - - - -
+
+figure(3)
+
+plot(trial2_time,trial2_angle);
+pts = ginput(2);
+%info = getrect(figure(3));
+% find closest time so you can cut from there
+
+idx = knnsearch([trial2_time trial2_angle],pts);
+
+trial2_time = trial2_time(idx(1):idx(2));
+trial2_angle = trial2_angle(idx(1):idx(2));
+
+% zero time
+trial2_time = trial2_time - trial2_time(1);
+
+% get releated tip angle
+trial2_tip = trial2_tip(idx(1):idx(2));
+
+
+% - - - - - - - - - ( end of tiral 2 ) - - - - - - - - - - - -
+
+
+% store expermintal data again to be plotted:
+
+time_exp = { trial1_time trial2_time };
+angle_exp = { trial1_angle trial2_angle };
+tip_exp = { trial1_tip trial2_tip };
+
+
 %% plot
 
 figure;
@@ -159,20 +245,25 @@ for i = 1:length(K1)
         figure(j)
         
         Time_plot_angle = Time_angle(i,:);
-        deg_plot = deg(i,:);
+        angle_plot = deg(i,:);
         
         % clean the zeros:
         % clean everything but first index
         zero_index = find(Time_plot_angle==0);
         Time_plot_angle(zero_index(2:end)) = [];
         
-        deg_plot(zero_index(2:end)) = [];
+        angle_plot(zero_index(2:end)) = [];
 
-        plot(Time_plot_angle,deg_plot,'r','LineWidth',1.5) ;
+	        plot(Time_plot_angle,angle_plot,'LineWidth',1.5,...
+            'DisplayName',[' K1 = ' num2str(K1(i)) ' K2 = ' num2str(K2(i))...
+            ' K3 = ' num2str(K3(i)) ' K4 = ' num2str(K4(i))]);
+        hold on
+        	plot(time_exp{:,i},angle_exp{:,i},'LineWidth',1.5,...
+            'DisplayName',['Experimental data for:' ' K1 = ' num2str(K1(i)) ' K2 = ' num2str(K2(i))...
+            ' K3 = ' num2str(K3(i)) ' K4 = ' num2str(K4(i))]);
+
         hold on;
         
-        plot(Time_plot_angle,deg_plot,'LineWidth',1.5) ;
-        hold on;
         
      
         
@@ -185,28 +276,18 @@ end
         Errorbound = 0.05*thetad*(ones(1,20));
         ErrorTime = linspace(0,6,20);
   
-  plot(ErrorTime,Errorbound+thetad,'*-','Color',[0.7 0.7 0.7],'LineWidth',1)
-  plot(ErrorTime,thetad-Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1)
+	  plot(ErrorTime,Errorbound+thetad,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Upper error bound of 5%')
+	  plot(ErrorTime,thetad-Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Lower error bound of 5%')
+	
 
   grid minor
   
   xlabel('Time (s)')
   ylabel(' \theta rad')
   %legend([ 'K1=' num2str(K1(1)) ],[ 'K1=' num2str(K1(2)) ])%,[ 'K1=' num2str(K1(3)) ],[ 'K1=' num2str(K1(4)) ],[ 'K1=' num2str(K1(5)) ],'5% Error bounds');
-   annotation('textbox',[.95 .5 .1 .2],'String',[ ' K1 = ' num2str(K1(i))...
-    ' K2 = ' num2str(K2(i-1))...
-    ' K3 = ' num2str(K3(i-1))...
-    ' K4 = ' num2str(K4(i-1))]...
-    ,'EdgeColor','b','FitBoxToText','on','BackgroundColor','b',...
-    'FaceAlpha',0.2,'LineWidth',2)
 
 
-   annotation('textbox',[.95 .5 .1 .2],'String',[ ' K1 = ' num2str(K1(i))...
-    ' K2 = ' num2str(K2(i))...
-    ' K3 = ' num2str(K3(i))...
-    ' K4 = ' num2str(K4(i))]...
-    ,'EdgeColor','r','FitBoxToText','on','BackgroundColor','r',...
-    'FaceAlpha',0.2,'LineWidth',2)
+legend('show','Location','SouthEast')
 
 
 end
@@ -320,93 +401,20 @@ Table_results = table(K1_table',K2_table',K3_table',K4_table',Settle_table_angle
 
 
 
-fprintf('NOTE :')
 
-fprintf( '\n' )
-fprintf( '\n' )
-
-
-fprintf('with 10%% overshoot allowed you are limited to overshoot values of: \n')
-
-fprintf( [num2str(thetad) char(177) num2str(thetad.*0.1) ] )
-
-fprintf( '\n' )
-
-
-fprintf('Error bound on settling time is 5%% ')
-
-fprintf( '\n' )
-
-
-%% Error analysis
-
-
-% adjust the data
-%t1 = trial 1
-
-% get time
-time_t1 = trial1(:,1)*10^(-3);
-time_t2 = trial2(:,1)*10^(-3);
-
-% zero time
-
-time_t1 = time_t1(:) - time_t1(1);
-time_t2 = time_t2(:) - time_t2(1);
-
-measureAngle_t1 = trial1(:,2) + abs(min(trial1(:,2)));
-% the + thetad/2 is to shift the data up by the input.
-% the hub goes from negative input/2 to +input/2
-
-measureTip_t1 = trial1(:,3);
-
-measureAngle_t2 = trial2(:,2)+ abs(min(trial2(:,2)));
-measureTip_t2 = trial2(:,3);
-
-figure(3)
-
-plot(time_t1,measureAngle_t1)
-pts = ginput(2);
-%info = getrect(figure(3));
-
-% find closest time so you can cut from there
-
-idx = knnsearch([time_t1 measureAngle_t1],pts)
-
-time_t1 = time_t1(idx(1):idx(2));
-measureAngle_t1 = measureAngle_t1(idx(1):idx(2));
-
-% zero time
-time_t1 = time_t1 - time_t1(1);
-
-figure(3)
-
-% repeat for second trial
-plot(time_t2,measureAngle_t2)
-pts = ginput(2);
-%info = getrect(figure(3));
-
-% find closest time so you can cut from there
-
-idx = knnsearch([time_t2 measureAngle_t2],pts)
-
-time_t2 = time_t2(idx(1):idx(2));
-measureAngle_t2 = measureAngle_t2(idx(1):idx(2));
-
-% zero time
-time_t2 = time_t2 - time_t2(1);
 
 
 %% plot data overlayed:
 
 figure(4)
-plot(Time_plot_angle,deg_plot,'LineWidth',1.5)
+plot(Time_plot_angle,angle_plot,'LineWidth',1.5)
 hold on
-plot(time_t1,measureAngle_t1,'LineWidth',1.5)
+plot(trial1_time,trial1_angle,'LineWidth',1.5)
 legend('Expermintal data','Thoertical Model');
 
 figure(5)
 
 plot(Time_plot_disp,disp_plot,'LineWidth',1.5)
 hold on
-plot(time_t2,measureAngle_t2,'LineWidth',1.5)
+plot(trial2_time,trial2_angle,'LineWidth',1.5)
 legend('Expermintal data','Thoertical Model');
