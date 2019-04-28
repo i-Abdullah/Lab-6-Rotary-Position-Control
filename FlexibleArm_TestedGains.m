@@ -18,6 +18,7 @@ close all
 thetad = input('Wanted Angle(Radians): ');
 dispd = input('Wanted displacement(meter): ');
 
+SetTime = 1;
 %% closed loop transfer constants:
 
 Kg = 33.3 ; % no units
@@ -271,6 +272,8 @@ for i = 1:length(K1)
 end
 
         ylim([-thetad-thetad*0.5 ,thetad+thetad*0.9]);
+        ylim([-0.1 ,0.7]);
+
         xlim([0,5]);
         title('Flexible arm angle')
         Errorbound = 0.05*thetad*(ones(1,20));
@@ -279,6 +282,8 @@ end
 	  plot(ErrorTime,Errorbound+thetad,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Upper error bound of 5%')
 	  plot(ErrorTime,thetad-Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Lower error bound of 5%')
 	
+plot([SetTime , SetTime],[-0.1 0.7],'*-','Color',[0.25, 0.25, 0.25],'DisplayName',['Maximum Allowed settle time' num2str(SetTime) 's' ],'LineWidth',2)
+
 
   grid minor
   
@@ -291,6 +296,8 @@ legend('show','Location','SouthEast')
 
 
 end
+
+saveas(figure(1),'FlexableAngle.jpg')
 
 % do the plot for tip displacement
 
@@ -310,7 +317,14 @@ for i = 1:length(K1)
         
         disp_plot(zero_index(2:end)) = [];
         
-        plot(Time_plot_disp,disp_plot,'LineWidth',1.5) ;
+	        plot(Time_plot_disp,disp_plot,'LineWidth',2,...
+            'DisplayName',[' K1 = ' num2str(K1(i)) ' K2 = ' num2str(K2(i))...
+            ' K3 = ' num2str(K3(i)) ' K4 = ' num2str(K4(i))]);
+        hold on
+        	plot(time_exp{:,i},tip_exp{:,i},'LineWidth',0.8,...
+            'DisplayName',['Experimental data for:' ' K1 = ' num2str(K1(i)) ' K2 = ' num2str(K2(i))...
+            ' K3 = ' num2str(K3(i)) ' K4 = ' num2str(K4(i))]);
+
         hold on;
 
 
@@ -321,35 +335,21 @@ end
         %ylim([-dispd-dispd*0.5 ,dispd+dispd*0.9]);
         xlim([0,5]);
         title('Flexible arm tip displacement')
-        Errorbound = 0.05*dispd*(ones(1,20));
+        Errorbound = 0.1*dispd*(ones(1,20));
         ErrorTime = linspace(0,6,20);
   
-  plot(ErrorTime,Errorbound+dispd,'*-','Color',[0.7 0.7 0.7],'LineWidth',1)
-  plot(ErrorTime,dispd-Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1)
+  plot(ErrorTime,Errorbound+dispd,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Upper error bound of 10%')
+  plot(ErrorTime,dispd-Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Upper error bound of 10%')
 grid minor
   xlabel('Time (s)')
   ylabel(' Tip displacement (m)')
   %legend([ 'K1=' num2str(K1(1)) ],[ 'K1=' num2str(K1(2)) ])%,[ 'K1=' num2str(K1(3)) ],[ 'K1=' num2str(K1(4)) ],[ 'K1=' num2str(K1(5)) ],'5% Error bounds');
-
-     annotation('textbox',[.95 .5 .1 .2],'String',[ ' K1 = ' num2str(K1(i))...
-    ' K2 = ' num2str(K2(i-1))...
-    ' K3 = ' num2str(K3(i-1))...
-    ' K4 = ' num2str(K4(i-1))]...
-    ,'EdgeColor','b','FitBoxToText','on','BackgroundColor','b',...
-    'FaceAlpha',0.2,'LineWidth',2)
-
-
-   annotation('textbox',[.95 .5 .1 .2],'String',[ ' K1 = ' num2str(K1(i))...
-    ' K2 = ' num2str(K2(i))...
-    ' K3 = ' num2str(K3(i))...
-    ' K4 = ' num2str(K4(i))]...
-    ,'EdgeColor','r','FitBoxToText','on','BackgroundColor','r',...
-    'FaceAlpha',0.2,'LineWidth',2)
-
+legend('show','Location','SouthEast')
    
 end
 
 
+saveas(figure(2),'FlexableTip.jpg')
 
 %% printout tbale with results
 
@@ -404,17 +404,4 @@ Table_results = table(K1_table',K2_table',K3_table',K4_table',Settle_table_angle
 
 
 
-%% plot data overlayed:
 
-figure(4)
-plot(Time_plot_angle,angle_plot,'LineWidth',1.5)
-hold on
-plot(trial1_time,trial1_angle,'LineWidth',1.5)
-legend('Expermintal data','Thoertical Model');
-
-figure(5)
-
-plot(Time_plot_disp,disp_plot,'LineWidth',1.5)
-hold on
-plot(trial2_time,trial2_angle,'LineWidth',1.5)
-legend('Expermintal data','Thoertical Model');
