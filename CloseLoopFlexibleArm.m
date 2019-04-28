@@ -167,11 +167,14 @@ for i = 1:length(K1)
         Time_plot_angle(zero_index(2:end)) = [];
         
         deg_plot(zero_index(2:end)) = [];
+
+        plot(Time_plot_angle,deg_plot,'r','LineWidth',1.5) ;
+        hold on;
         
         plot(Time_plot_angle,deg_plot,'LineWidth',1.5) ;
         hold on;
-
-
+        
+     
         
         
 end
@@ -185,11 +188,27 @@ end
   plot(ErrorTime,Errorbound+thetad,'*-','Color',[0.7 0.7 0.7],'LineWidth',1)
   plot(ErrorTime,thetad-Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1)
 
+  grid minor
+  
   xlabel('Time (s)')
   ylabel(' \theta rad')
-  legend([ 'K1=' num2str(K1(1)) ],[ 'K1=' num2str(K1(2)) ])%,[ 'K1=' num2str(K1(3)) ],[ 'K1=' num2str(K1(4)) ],[ 'K1=' num2str(K1(5)) ],'5% Error bounds');
+  %legend([ 'K1=' num2str(K1(1)) ],[ 'K1=' num2str(K1(2)) ])%,[ 'K1=' num2str(K1(3)) ],[ 'K1=' num2str(K1(4)) ],[ 'K1=' num2str(K1(5)) ],'5% Error bounds');
+   annotation('textbox',[.95 .5 .1 .2],'String',[ ' K1 = ' num2str(K1(i))...
+    ' K2 = ' num2str(K2(i-1))...
+    ' K3 = ' num2str(K3(i-1))...
+    ' K4 = ' num2str(K4(i-1))]...
+    ,'EdgeColor','b','FitBoxToText','on','BackgroundColor','b',...
+    'FaceAlpha',0.2,'LineWidth',2)
 
-   
+
+   annotation('textbox',[.95 .5 .1 .2],'String',[ ' K1 = ' num2str(K1(i))...
+    ' K2 = ' num2str(K2(i))...
+    ' K3 = ' num2str(K3(i))...
+    ' K4 = ' num2str(K4(i))]...
+    ,'EdgeColor','r','FitBoxToText','on','BackgroundColor','r',...
+    'FaceAlpha',0.2,'LineWidth',2)
+
+
 end
 
 % do the plot for tip displacement
@@ -226,10 +245,25 @@ end
   
   plot(ErrorTime,Errorbound+dispd,'*-','Color',[0.7 0.7 0.7],'LineWidth',1)
   plot(ErrorTime,dispd-Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1)
-
+grid minor
   xlabel('Time (s)')
   ylabel(' Tip displacement (m)')
-  legend([ 'K1=' num2str(K1(1)) ],[ 'K1=' num2str(K1(2)) ])%,[ 'K1=' num2str(K1(3)) ],[ 'K1=' num2str(K1(4)) ],[ 'K1=' num2str(K1(5)) ],'5% Error bounds');
+  %legend([ 'K1=' num2str(K1(1)) ],[ 'K1=' num2str(K1(2)) ])%,[ 'K1=' num2str(K1(3)) ],[ 'K1=' num2str(K1(4)) ],[ 'K1=' num2str(K1(5)) ],'5% Error bounds');
+
+     annotation('textbox',[.95 .5 .1 .2],'String',[ ' K1 = ' num2str(K1(i))...
+    ' K2 = ' num2str(K2(i-1))...
+    ' K3 = ' num2str(K3(i-1))...
+    ' K4 = ' num2str(K4(i-1))]...
+    ,'EdgeColor','b','FitBoxToText','on','BackgroundColor','b',...
+    'FaceAlpha',0.2,'LineWidth',2)
+
+
+   annotation('textbox',[.95 .5 .1 .2],'String',[ ' K1 = ' num2str(K1(i))...
+    ' K2 = ' num2str(K2(i))...
+    ' K3 = ' num2str(K3(i))...
+    ' K4 = ' num2str(K4(i))]...
+    ,'EdgeColor','r','FitBoxToText','on','BackgroundColor','r',...
+    'FaceAlpha',0.2,'LineWidth',2)
 
    
 end
