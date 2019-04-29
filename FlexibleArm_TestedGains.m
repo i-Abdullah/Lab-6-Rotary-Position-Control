@@ -335,11 +335,11 @@ end
         %ylim([-dispd-dispd*0.5 ,dispd+dispd*0.9]);
         xlim([0,5]);
         title('Flexible arm tip displacement')
-        Errorbound = 0.1*dispd*(ones(1,20));
+        Errorbound = 0.01*(ones(1,20));
         ErrorTime = linspace(0,6,20);
   
-  plot(ErrorTime,Errorbound+dispd,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Upper error bound of 10%')
-  plot(ErrorTime,dispd-Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Upper error bound of 10%')
+  plot(ErrorTime,Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Upper error bound of +0.01 m')
+  plot(ErrorTime,-Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Lower error bound of -0.01 m')
 grid minor
   xlabel('Time (s)')
   ylabel(' Tip displacement (m)')

@@ -49,6 +49,11 @@
 	K3 = linspace(0,1.5,5);
 	K4 = linspace(0,1.5,5);
 
+%     K1 = linspace(0,20,5);
+% 	K2 = linspace(-50,0,5);
+% 	K3 = linspace(0,0,5);
+% 	K4 = linspace(0,0,5);
+
     % definitions in lab docuement:
 	
 	
@@ -217,11 +222,11 @@
 	        %ylim([-dispd-dispd*0.5 ,dispd+dispd*0.9]);
 	        xlim([0,5]);
 	        title('Flexible arm tip displacement')
-	        Errorbound = 0.1*dispd*(ones(1,20));
-	        ErrorTime = linspace(0,6,20);
-	
-	  plot(ErrorTime,Errorbound+dispd,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Upper error bound of 10%')
-	  plot(ErrorTime,dispd-Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Lower error bound of 10%')
+        Errorbound = 0.01*(ones(1,20));
+        ErrorTime = linspace(0,6,20);
+  
+  plot(ErrorTime,Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Upper error bound of +0.01 m')
+  plot(ErrorTime,-Errorbound,'*-','Color',[0.7 0.7 0.7],'LineWidth',1,'DisplayName','Lower error bound of -0.01 m')
 	
 	  xlabel('Time (s)')
 	  ylabel(' Tip displacement (m)')
