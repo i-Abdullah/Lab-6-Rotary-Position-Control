@@ -181,7 +181,7 @@
 	  ylabel(' \theta rad')
 	  %legend([ 'K1=' num2str(K1(1)) ],[ 'K1=' num2str(K1(2)) ])%,[ 'K1=' num2str(K1(3)) ],[ 'K1=' num2str(K1(4)) ],[ 'K1=' num2str(K1(5)) ],'5% Error bounds');
 	legend('show','Location','SouthEast');
-    grid minor
+    %grid minor
     ylim([ -thetad+(thetad/1.3) thetad+(thetad/2)])
 	
 	end
